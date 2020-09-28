@@ -1,1 +1,5 @@
-console.log('This is the My First Xeneta client side entry point.');
+import React from 'react';
+import ReactDOM from 'react-dom';
+import App from 'js/App';
+
+ReactDOM.render(<App/>, document.getElementById('app'));
