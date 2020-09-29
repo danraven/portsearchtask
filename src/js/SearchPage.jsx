@@ -6,8 +6,28 @@ import RateChart from 'js/RateChart';
 import { useForm, FormProvider } from 'react-hook-form';
 import { TitleHeading, FormFields, ContentWrapper, Submit, InfoBar } from 'js/UI';
 
+const FetchStates = {
+    INIT: 0,
+    FETCHED: 1,
+    FETCHING: 2,
+    ERROR: 3
+};
+
 function formatDate(dateObj) {
     return dateObj.toISOString().split('T')[0];
+}
+
+function displayInfo(fetchState, dataLength) {
+    switch (fetchState) {
+        case FetchStates.FETCHING:
+            return 'Fetching data...';
+        case FetchStates.ERROR:
+            return 'Error during data retrieval.';
+        case FetchStates.FETCHED:
+            return `Found ${dataLength} records.`;
+        default:
+            return 'Unknown state';
+    }
 }
 
 function SearchPage() {
@@ -16,12 +36,15 @@ function SearchPage() {
     const fromDate = form.watch('dateFrom');
     const toDate = form.watch('dateTo', nowDate);
     const [rates, setRates] = useState([]);
-    const [isFetching, setIsFetching] = useState(false);
+    const [fetchState, setFetchState] = useState(FetchStates.INIT);
 
     const onSubmit = useCallback(values => {
-        setIsFetching(true);
+        setFetchState(FetchStates.FETCHING);
         const { portFrom, portTo, dateFrom, dateTo } = values;
         Api.getRates(portFrom, portTo, formatDate(dateFrom), formatDate(dateTo))
+            .catch(() => {
+                setFetchState(FetchStates.ERROR);
+            })
             .then(result => {
                 setRates(result.rates.reduce((acc, [name, rate]) => {
                     if (rate) {
@@ -29,9 +52,9 @@ function SearchPage() {
                     }
                     return acc;
                 }, []));
-                setIsFetching(false);
+                setFetchState(FetchStates.FETCHED);
             });
-    });
+    }, [FetchStates, formatDate]);
 
     return <FormProvider {...form}>
         <TitleHeading>Shipping rate lookup</TitleHeading>
@@ -42,11 +65,13 @@ function SearchPage() {
                     <PortInput name="portTo" placeholder="Type to search" label="To port"/>
                     <DateInput name="dateFrom" maxDate={toDate} placeholder="Pick a date" label="From date"/>
                     <DateInput name="dateTo" minDate={fromDate} maxDate={nowDate} placeholder="Pick a date" label="To date"/>
-                    <Submit disabled={isFetching} type="submit">Go</Submit>
+                    <Submit disabled={fetchState === FetchStates.FETCHING} type="submit">Go</Submit>
                 </FormFields>
             </form>
-            <InfoBar>{isFetching ? 'Fetching data...' : `Found ${rates.length} records`}</InfoBar>
-            {!!rates.length && <RateChart rates={rates}/>}
+            {(fetchState !== FetchStates.INIT) && <>
+                <InfoBar error={fetchState === FetchStates.ERROR}>{displayInfo(fetchState, rates.length)}</InfoBar>
+                {!!rates.length && <RateChart rates={rates}/>}
+            </>}
         </ContentWrapper>
     </FormProvider>;
 }

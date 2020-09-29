@@ -8,7 +8,7 @@ function RateChart(props) {
 
     return <ChartWrapper>
         <ResponsiveContainer>
-            <BarChart width={400} height={300} data={rates.filter(item => !!item.rate)}>
+            <BarChart width={400} height={300} barGap={1} data={rates.filter(item => !!item.rate)}>
                 <XAxis dataKey="name"/>
                 <YAxis/>
                 <Tooltip/>

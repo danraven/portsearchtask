@@ -118,12 +118,12 @@ export const AutocompleteItem = styled.li`
 export const InfoBar = styled.p`
     margin: 0.5rem 0;
     padding: 0;
-    color: #555;
+    color: ${props => props.error ? '#D2122E' : '#555'};
     font-size: 0.9rem;
 `;
 
 export const ChartWrapper = styled.div`
-    margin-top: 1.5rem;
+    margin-top: 2.3rem;
     width: 100%;
     height: 300px;
 `;
