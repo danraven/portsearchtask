@@ -8,7 +8,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 function DateInput(props) {
     const { format, placeholder, name, label, minDate, maxDate } = props;
     const [selectedDate, setSelectedDate] = useState();
-    const { register, unregister, setValue } = useFormContext();
+    const { register, unregister, setValue, errors } = useFormContext();
     const onDateChange = useCallback(date => {
         setSelectedDate(date);
         setValue(name, date);
@@ -20,7 +20,7 @@ function DateInput(props) {
     }, [name, register, unregister]);
 
     return <div>
-        {!!label && <TextLabel>{label}</TextLabel>}
+        {!!label && <TextLabel error={!!errors[name]}>{label}</TextLabel>}
         <DatePicker
             selected={selectedDate}
             customInput={<TextField name={name}/>}

@@ -12,7 +12,7 @@ function RateChart(props) {
                 <XAxis dataKey="name"/>
                 <YAxis/>
                 <Tooltip/>
-                <Bar dataKey="rate" fill="#B9D9EB"/>
+                <Bar dataKey="rate" fill="#5072A7"/>
             </BarChart>
        </ResponsiveContainer>
     </ChartWrapper>;

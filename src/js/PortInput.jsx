@@ -12,7 +12,7 @@ function itemToString(item) {
 function PortInput(props) {
     const { placeholder, name, label, timeout, minLength } = props;
     const [itemList, setItemList] = useState([]);
-    const { register, unregister, setValue: setFormValue } = useFormContext();
+    const { register, unregister, errors, setValue: setFormValue } = useFormContext();
     let timer = null;
 
     const onInputValueChange = useCallback(({ type, inputValue }) => {
@@ -45,7 +45,7 @@ function PortInput(props) {
     }, [name, register, unregister]);
 
     return <div>
-        {!!label && <TextLabel {...getLabelProps()}>{label}</TextLabel>}
+        {!!label && <TextLabel {...getLabelProps()} error={!!errors[name]}>{label}</TextLabel>}
         <AutocompleteWrapper {...getComboboxProps()}>
             <TextField {...getInputProps()} placeholder={placeholder}/>
             <AutocompleteList hidden={!itemList.length} {...getMenuProps()}>
