@@ -54,7 +54,7 @@ function SearchPage() {
                 }, []));
                 setFetchState(FetchStates.FETCHED);
             });
-    }, [FetchStates, formatDate]);
+    }, []);
 
     return <FormProvider {...form}>
         <TitleHeading>Shipping rate lookup</TitleHeading>

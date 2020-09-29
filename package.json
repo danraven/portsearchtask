@@ -6,7 +6,7 @@
     "build": "webpack --config webpack.config.js --mode development",
     "start": "node ./bin/www",
     "watch": "npm run build -- --watch & nodemon npm start",
-    "lint": "eslint ./src"
+    "lint": "eslint ./src/js/*"
   },
   "dependencies": {
     "@babel/polyfill": "^7.0.0",

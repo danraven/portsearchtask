@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { useCombobox } from 'downshift';
 import PropTypes from 'prop-types';
@@ -13,19 +13,19 @@ function PortInput(props) {
     const { placeholder, name, label, timeout, minLength } = props;
     const [itemList, setItemList] = useState([]);
     const { register, unregister, errors, setValue: setFormValue } = useFormContext();
-    let timer = null;
+    const timer = useRef();
 
     const onInputValueChange = useCallback(({ type, inputValue }) => {
         setItemList([]);
-        clearTimeout(timer);
+        clearTimeout(timer.current);
         if (type !== useCombobox.stateChangeTypes.InputChange) {
             return;
         }
         setFormValue(name, null);
         if (inputValue.length >= minLength) {
-            timer = setTimeout(() => Api.searchPorts(inputValue).then(list => setItemList(list.results)), timeout);
+            timer.current = setTimeout(() => Api.searchPorts(inputValue).then(list => setItemList(list.results)), timeout);
         }
-    }, [minLength, name, setFormValue, timeout, timer]);
+    }, [minLength, name, setFormValue, timeout]);
 
     const onSelectedItemChange = useCallback(({ selectedItem }) => {
         setItemList([]);
